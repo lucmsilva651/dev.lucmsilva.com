@@ -14,20 +14,36 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/dashboard', (req, res) => {
+  res.render('dash/index');
+});
+
+app.get('/dashboard/users', (req, res) => {
+  res.render('dash/details/user');
+});
+
+app.get('/dashboard/invites', (req, res) => {
+  res.render('dash/details/invites');
+});
+
+app.get('/dashboard/feedback', (req, res) => {
+  res.render('dash/details/feedback');
+});
+
 app.get('/login', (req, res) => {
-  res.render('login');
+  res.render('login/index');
 });
 
 app.get('/login/github', (req, res) => {
-  res.render('login/github');
+  res.render('login/platforms/github');
 });
 
 app.get('/login/gitlab', (req, res) => {
-  res.render('login/gitlab');
+  res.render('login/platforms/gitlab');
 });
 
 app.get('/login/telegram', (req, res) => {
-  res.render('login/telegram');
+  res.render('login/platforms/telegram');
 });
 
 app.listen(PORT, () => {

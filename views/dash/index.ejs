@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Group Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>body, button { font-family: "Roboto", sans-serif; }</style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper blue">
+      <a href="/" class="brand-logo center">pifkeys Developer Dashboard</a>
+      <ul id="nav-mobile" class="right">
+        <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row" style="margin-top: 50px;">
+      <div class="col s12 m4">
+        <div class="card hoverable">
+          <div class="card-content">
+            <span class="card-title">Users</span>
+            <h5>0</h5>
+          </div>
+          <div class="card-action">
+            <a href="/dashboard/users">More details</a>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4">
+        <div class="card hoverable">
+          <div class="card-content">
+            <span class="card-title">Invites generated</span>
+            <h5>0</h5>
+          </div>
+          <div class="card-action">
+            <a href="/dashboard/invites">More details</a>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4">
+        <div class="card hoverable">
+          <div class="card-content">
+            <span class="card-title">Feedback</span>
+            <h5>0%</h5>
+          </div>
+          <div class="card-action">
+            <a href="/dashboard/feedback">More details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <h5>Criteria meeting (general)</h5>
+        <table class="highlight responsive-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Meeting users</th>
+              <th>Don't meet</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GitHub / GitLab Account date</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>GitHub / GitLab Repository count</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>GitHub / GitLab Commit date</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
