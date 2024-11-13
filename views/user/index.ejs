@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body, button { font-family: "Roboto", sans-serif; }
+    .passed { color: green; }
+    .failed { color: red; }
+    .repoList { list-style-type: none; padding: 0; }
+    .repoItm { padding: 10px; border-bottom: 1px solid #ccc; }
+    .repoItm:last-child { border-bottom: none; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper blue">
+      <a href="#" class="brand-logo center">pifkeys Developer Dashboard</a>
+      <ul id="nav-mobile" class="right">
+        <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="margin-top: 30px;">
+    <div class="card hoverable">
+      <div class="card-content">
+        <div class="row">
+          <div class="col s12 m4 center-align">
+            <img src="<%= user.avatar %>" alt="Avatar" class="circle responsive-img" width="150">
+            <h5><%= user.username %></h5>
+          </div>
+          <div class="col s12 m8">
+            <h6>Account Information:</h6>
+            <ul class="collection">
+              <li class="collection-item">Account Age: <strong><%= user.accAgeInMonths %> month(s)</strong></li>
+              <li class="collection-item">Number of Repositories: <strong><%= user.public_repos %></strong></li>
+            </ul>
+
+            <h6>Repository Commits:</h6>
+            <ul class="repoList">
+              <% repoCommits.slice(0, 5).forEach(function(repo) { %>
+                <li class="repoItm">
+                  <strong><%= user.username %>/<%= repo.name %></strong> - 
+                  <% if (repo.lastCommit !== null) { %>
+                    Last commit <%= repo.lastCommit %> day(s) ago
+                  <% } else { %>
+                    No commits found
+                  <% } %>
+                </li>
+              <% }); %>
+
+              <% if (repoCommits.length > 5) { %>
+                <div class="hidden" id="extRepos">
+                  <% repoCommits.slice(5).forEach(function(repo) { %>
+                    <li class="repoItm">
+                      <strong><%= user.username %>/<%= repo.name %></strong> - 
+                      <% if (repo.lastCommit !== null) { %>
+                        Last commit <%= repo.lastCommit %> day(s) ago
+                      <% } else { %>
+                        No commits found
+                      <% } %>
+                    </li>
+                  <% }); %>
+                </div>
+                <button id="showMoreBtn" class="btn waves-effect waves-light blue" style="margin-top: 10px;" onclick="toggleRepos()">Show More</button>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+
+        <h6>Qualification:</h6>
+        <ul class="collection">
+          <% for (let key in criteria) { %>
+            <li class="collection-item">
+              <% if (criteria[key].passed) { %>
+                <i class="fas fa-check passed"></i>
+              <% } else { %>
+                <i class="fas fa-times failed"></i>
+              <% } %>
+              <span><%= criteria[key].label %></span>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    function toggleRepos() {
+      const extRepos = document.getElementById('extRepos');
+      const showMoreBtn = document.getElementById('showMoreBtn');
+
+      if (extRepos.classList.contains('hidden')) {
+        extRepos.classList.remove('hidden');
+        showMoreBtn.innerText = 'Show Less';
+      } else {
+        extRepos.classList.add('hidden');
+        showMoreBtn.innerText = 'Show More';
+      }
+    }
+  </script>
+</body>
+</html>
