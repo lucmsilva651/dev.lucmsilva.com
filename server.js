@@ -3,7 +3,6 @@ const express = require('express');
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const session = require('express-session');
-const path = require('path');
 const axios = require('axios');
 
 const app = express();
@@ -137,7 +136,6 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
         }
       })
     );
-
     const criteria = {
       accAge: {
         label: 'Account must be at least 1 month old',
@@ -149,8 +147,8 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
       },
       recCommits: {
         label: 'At least 3 repositories must have commits older than 1 day',
-        passed: repoCommits.filter((repo) => repo.lastCommit !== null && repo.lastCommit > 1).length >= 3,
-      },      
+        passed: repoCommits.filter((repo) => repo.lastCommit !== null && repo.lastCommit >= 1).length >= 3,
+      },
     };
 
     res.render('user/index', {
