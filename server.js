@@ -52,24 +52,33 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
+function ensureAuthorized(req, res, next) {
+  const allowedUsers = process.env.ALLOWED_USERS.split(',');
+  if (req.isAuthenticated() && allowedUsers.includes(req.user.profile.username)) {
+    return next();
+  }
+  res.redirect('/user'); // redirect to /user (if not logged in will redirect to /login after)
+}
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/dashboard', (req, res) => {
+// protected routes
+app.get('/dashboard', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/index');
 });
 
-app.get('/dashboard/users', (req, res) => {
+app.get('/dashboard/users', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/user');
 });
 
-app.get('/dashboard/invites', (req, res) => {
+app.get('/dashboard/invites', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/invites');
 });
 
-app.get('/dashboard/feedback', (req, res) => {
+app.get('/dashboard/feedback', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/feedback');
 });
 
