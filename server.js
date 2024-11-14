@@ -50,7 +50,7 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect('/');
 }
 
 // Routes
@@ -74,23 +74,11 @@ app.get('/dashboard/feedback', (req, res) => {
   res.render('dash/details/feedback');
 });
 
-app.get('/login', (req, res) => {
-  res.render('login/index');
-});
-
 app.get('/login/github', passport.authenticate('github', { scope: ['user', 'repo'] }));
-
-app.get('/login/gitlab', (req, res) => {
-  res.render('login/platforms/gitlab');
-});
-
-app.get('/login/telegram', (req, res) => {
-  res.render('login/platforms/telegram');
-});
 
 app.get(
   '/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
+  passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     // if success
     res.redirect('/user');
@@ -177,7 +165,7 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching GH data:', error);
-    res.redirect('login/index');
+    res.redirect('/');
   }
 });
 
