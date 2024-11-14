@@ -118,6 +118,10 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
             }
           );
 
+          if (commitsResponse.data.length === 0) {
+            return null;
+          }
+
           const lastCommitDate = new Date(commitsResponse.data[0].commit.author.date);
           const daysSinceLastCommit = Math.floor(
             (currentDate - lastCommitDate) / (1000 * 60 * 60 * 24)
@@ -136,6 +140,7 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
         }
       })
     );
+    const filteredRepoCommits = repoCommits.filter(repo => repo !== null); // filter to find null values for repos w/o commits
     const criteria = {
       accAge: {
         label: 'Account must be at least 1 month old',
@@ -147,7 +152,7 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
       },
       recCommits: {
         label: 'At least 3 repositories must have commits older than 1 day',
-        passed: repoCommits.filter((repo) => repo.lastCommit !== null && repo.lastCommit >= 1).length >= 3,
+        passed: filteredRepoCommits.filter((repo) => repo.lastCommit !== null && repo.lastCommit >= 1).length >= 3,
       },
     };
 
