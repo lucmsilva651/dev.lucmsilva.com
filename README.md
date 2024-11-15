@@ -2,9 +2,9 @@
 Developer portal for pifkeys group
 
 # Self-hosting
-To self-host this repo, you must have NodeJS and NPM. Once you have installed, you may continue.
+To self-host this repo, you must have Node.js and NPM. Once you have installed, you may continue.
 
-1. **Install dependancies**
+1. **Install dependencies**
 
    ```
    npm install
@@ -16,6 +16,8 @@ To self-host this repo, you must have NodeJS and NPM. Once you have installed, y
    `SESSION_SECRET` should be a long, random string which will keep sessions secure.
    
    `GITHUB_CLIENT_[ID/SECRET]` is your GitHub OAuth application credentials. You can create it with [this guide](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app), and put your client ID and secret in the .env file. The default callback URL is `http://localhost:3000/auth/github/callback`
+
+   `ALLOWED_USERS` is the allowed users who can access /dashboard. Users should be a seperated by a comma, and refer to GitHub usernames.
 
 3. **Start Express server**
 
