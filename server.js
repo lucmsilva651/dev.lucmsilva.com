@@ -1,4 +1,5 @@
 require('dotenv').config();
+const crypto = require('crypto');
 const express = require('express');
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
@@ -35,7 +36,6 @@ passport.use(
 passport.serializeUser((user, done) => {
   done(null, user);
 });
-
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
@@ -60,6 +60,24 @@ function ensureAuthorized(req, res, next) {
   res.redirect('/user'); // redirect to /user (if not logged in will redirect to /login after)
 }
 
+function ensureTelegramAuthenticated(req, res, next) {
+  if (req.session.telegramVerified) {
+    return next();
+  }
+  res.redirect('/auth/telegram');
+}
+
+function verifyTelegramAuth(data, botToken) {
+  const secret = crypto.createHash('sha256').update(botToken).digest();
+  const checkString = Object.keys(data)
+      .filter((key) => key !== 'hash')
+      .sort()
+      .map((key) => `${key}=${data[key]}`)
+      .join('\n');
+  const hmac = crypto.createHmac('sha256', secret).update(checkString).digest('hex');
+  return hmac === data.hash;
+}
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index');
@@ -69,19 +87,15 @@ app.get('/', (req, res) => {
 app.get('/dashboard', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/index');
 });
-
 app.get('/dashboard/users', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/user');
 });
-
 app.get('/dashboard/invites', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/invites');
 });
-
 app.get('/dashboard/feedback', ensureAuthenticated, ensureAuthorized, (req, res) => {
   res.render('dash/details/feedback');
 });
-
 app.get('/login/github', passport.authenticate('github', { scope: ['user', 'repo'] }));
 
 app.get(
@@ -89,33 +103,50 @@ app.get(
   passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     // if success
-    res.redirect('/user');
+    res.redirect('/auth/telegram');
   }
 );
 
-app.get('/user', ensureAuthenticated, async (req, res) => {
+app.get('/auth/telegram', ensureAuthenticated, (req, res) => {
+  const botUsername = process.env.TELEGRAM_BOT_USERNAME;
+  const url = process.env.TELEGRAM_CALLBACK_URL;
+  res.render('tgauth', { botUsername, url });
+});
+
+app.get('/auth/telegram/callback', ensureAuthenticated, (req, res) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const data = req.query;
+  if (verifyTelegramAuth(data, botToken)) {
+    req.session.telegramVerified = true;
+    req.session.telegramUser = {
+      id: data.id,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      username: data.username,
+    };
+    res.redirect('/user');
+  } else {
+    res.status(401).send('Telegram verification failed.');
+  }
+});
+
+app.get('/user', ensureAuthenticated, ensureTelegramAuthenticated, async (req, res) => {
   try {
     const accessToken = req.user.accessToken;
-
     const userResponse = await axios.get('https://api.github.com/user', {
       headers: { Authorization: `token ${accessToken}` },
     });
-
     const { login, avatar_url, created_at, public_repos } = userResponse.data;
-
     const accountCreatedDate = new Date(created_at);
     const currentDate = new Date();
     const accAgeInMonths =
       (currentDate.getFullYear() - accountCreatedDate.getFullYear()) * 12 +
       (currentDate.getMonth() - accountCreatedDate.getMonth());
-
     const reposResponse = await axios.get('https://api.github.com/user/repos', {
       headers: { Authorization: `token ${accessToken}` },
       params: { per_page: 100 },
     });
-
     const repos = reposResponse.data;
-
     const repoCommits = await Promise.all(
       repos.map(async (repo) => {
         try {
@@ -126,16 +157,13 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
               params: { per_page: 1 },
             }
           );
-
           if (commitsResponse.data.length === 0) {
             return null;
           }
-
           const lastCommitDate = new Date(commitsResponse.data[0].commit.author.date);
           const daysSinceLastCommit = Math.floor(
             (currentDate - lastCommitDate) / (1000 * 60 * 60 * 24)
           );
-
           return {
             name: repo.name,
             lastCommit: daysSinceLastCommit,
@@ -164,7 +192,7 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
         passed: filteredRepoCommits.filter((repo) => repo.lastCommit !== null && repo.lastCommit >= 1).length >= 3,
       },
     };
-
+    const telegramUser = req.session.telegramUser || null;
     res.render('user/index', {
       user: {
         username: login,
@@ -174,6 +202,7 @@ app.get('/user', ensureAuthenticated, async (req, res) => {
       },
       repoCommits,
       criteria,
+      telegramUser,
     });
   } catch (error) {
     console.error('Error fetching GH data:', error);

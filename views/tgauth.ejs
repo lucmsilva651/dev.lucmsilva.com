@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>body, button { font-family: "Roboto", sans-serif; }</style>
+  <title>Log in with Telegram</title>
+</head>
+<body>
+  <div class="container center-align" style="margin-top: 100px;">
+    <div class="card hoverable">
+      <div class="card-content">
+        <h4><i class="fa-brands fa-telegram" style="margin-bottom: 20px; color: cornflowerblue;"></i><br>Continue with Telegram</h4>
+        <p style="margin-bottom: 20px;">Press the button below to authenticate with your Telegram account</p>
+        <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="<%= botUsername %>" data-size="large" data-auth-url="<%= url %>" data-request-access="write"></script>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

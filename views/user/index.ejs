@@ -35,16 +35,58 @@
           </div>
           <div class="col s12 m8">
             <h6>Account Information:</h6>
+            <% if (telegramUser) { %>
             <ul class="collection">
-              <li class="collection-item">Account Age: <strong><%= user.accAgeInMonths %> month(s)</strong></li>
-              <li class="collection-item">Number of Repositories: <strong><%= user.public_repos %></strong></li>
+              <li class="collection-item">
+                Telegram ID: <strong><%= telegramUser.id %></strong>
+              </li>
+              <li class="collection-item">
+                Telegram Username:
+                <strong>
+                  <a href="https://t.me/<%= telegramUser.username %>" target="_blank">
+                    @<%= telegramUser.username %>
+                  </a>
+                </strong>
+              </li>
+              <li class="collection-item">
+                Telegram Name: <strong><%= telegramUser.firstName %> <%= telegramUser.lastName || 'N/A' %></strong>
+              </li>
+              <% if (telegramUser.photoUrl) { %>
+                <li class="collection-item">
+                  Telegram Profile Picture:
+                  <img src="<%= telegramUser.photoUrl %>" alt="Telegram Profile" style="width:50px; height:50px; border-radius:50%;">
+                </li>
+              <% } %>
+            <% } else { %>
+              <p style="color: red;">!!! No Telegram account found (this is an issue) !!!</p>
+            <% } %>
+              <li class="collection-item">
+                GitHub Account Age: <strong><%= user.accAgeInMonths %> month(s)</strong>
+              </li>
+              <li class="collection-item">
+                Number of Repositories: <strong><%= user.public_repos %></strong>
+              </li>
             </ul>
-
-            <h6>Repository Commits:</h6>
-            <ul class="repoList">
-              <% repoCommits.slice(0, 5).forEach(function(repo) { %>
+          </div>
+        </div>
+        <hr />
+        <h6>Repository Commits:</h6>
+        <ul class="repoList">
+          <% repoCommits.slice(0, 5).forEach(function(repo) { %>
+            <li class="repoItm">
+              <strong><%= user.username %>/<%= repo.name %></strong> -
+              <% if (repo.lastCommit !== null) { %>
+                Last commit <%= repo.lastCommit %> day(s) ago
+              <% } else { %>
+                No commits found
+              <% } %>
+            </li>
+          <% }); %>
+          <% if (repoCommits.length > 5) { %>
+            <div class="hidden" id="extRepos">
+              <% repoCommits.slice(5).forEach(function(repo) { %>
                 <li class="repoItm">
-                  <strong><%= user.username %>/<%= repo.name %></strong> - 
+                  <strong><%= user.username %>/<%= repo.name %></strong> -
                   <% if (repo.lastCommit !== null) { %>
                     Last commit <%= repo.lastCommit %> day(s) ago
                   <% } else { %>
@@ -52,26 +94,11 @@
                   <% } %>
                 </li>
               <% }); %>
-
-              <% if (repoCommits.length > 5) { %>
-                <div class="hidden" id="extRepos">
-                  <% repoCommits.slice(5).forEach(function(repo) { %>
-                    <li class="repoItm">
-                      <strong><%= user.username %>/<%= repo.name %></strong> - 
-                      <% if (repo.lastCommit !== null) { %>
-                        Last commit <%= repo.lastCommit %> day(s) ago
-                      <% } else { %>
-                        No commits found
-                      <% } %>
-                    </li>
-                  <% }); %>
-                </div>
-                <button id="showMoreBtn" class="btn waves-effect waves-light blue" style="margin-top: 10px;" onclick="toggleRepos()">Show More</button>
-              <% } %>
-            </ul>
-          </div>
-        </div>
-
+            </div>
+            <button id="showMoreBtn" class="btn waves-effect waves-light blue" style="margin-top: 10px;" onclick="toggleRepos()">Show More</button>
+          <% } %>
+        </ul>
+        <hr />
         <h6>Qualification:</h6>
         <ul class="collection">
           <% for (let key in criteria) { %>
